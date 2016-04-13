@@ -25,6 +25,8 @@ dependencies {
     compile 'com.android.support:appcompat-v7:23.1.1'
 //    compile project(':api')
 //    apt project(':processor')
+//    compile 'com.github.yjfnypeu:ProcessorTools:0.1'
+//    compile 'com.github.yjfnypeu:AndroidDatePicker:cb8e7f0254'
     compile 'com.jakewharton:butterknife:7.0.1'
 }
 

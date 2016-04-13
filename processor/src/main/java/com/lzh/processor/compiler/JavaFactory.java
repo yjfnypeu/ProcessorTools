@@ -249,7 +249,7 @@ public class JavaFactory {
                 .addJavadoc(data.getDoc());
         if (!StringUtils.isEmpty(data.getDefValue())) {
             builder.initializer(
-                    (data.getType().getQualifiedName().equals(String.class.getCanonicalName()) ? "$S" : "$L"),
+                    (data.getType().equals(TypeName.get(String.class)) ? "$S" : "$L"),
                     data.getDefValue());
         }
 
@@ -303,15 +303,15 @@ public class JavaFactory {
         return name;
     }
 
-    TypeName getTypeName(FieldType parent,TypeElement child) {
+    TypeName getTypeName(FieldType parent,TypeName child) {
         if (parent.equals(FieldType.array)) {
-            return getTypeName(child.getQualifiedName() + "[]");
+            return getTypeName(child.toString() + "[]");
         } else if (parent.equals(FieldType.list)) {
-            return getTypeName(List.class.getCanonicalName() + "<" + child.getQualifiedName() + ">");
+            return getTypeName(List.class.getCanonicalName() + "<" + child.toString() + ">");
         } else if (parent.equals(FieldType.set)) {
-            return getTypeName(Set.class.getCanonicalName() + "<" + child.getQualifiedName() + ">");
+            return getTypeName(Set.class.getCanonicalName() + "<" + child.toString() + ">");
         } else {
-            return getTypeName(child);
+            return child;
         }
     }
 

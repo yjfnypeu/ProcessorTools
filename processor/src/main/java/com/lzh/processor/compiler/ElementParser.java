@@ -4,12 +4,12 @@ import com.lzh.processor.annoapi.Field;
 import com.lzh.processor.annoapi.Params;
 import com.lzh.processor.data.FieldData;
 import com.lzh.processor.util.UtilMgr;
+import com.lzh.processor.util.javapoet.TypeName;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.lang.model.element.TypeElement;
-import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.MirroredTypeException;
 
 /**
@@ -73,18 +73,15 @@ public class ElementParser {
         }
     }
 
-    private TypeElement getClzType (Field field) {
-        TypeElement type;
-        String clzName;
+    private TypeName getClzType (Field field) {
+        TypeName typeName;
         try {
             Class<?> clazz = field.type();
-            clzName = clazz.getCanonicalName();
-            type = UtilMgr.getMgr().getElementUtils().getTypeElement(clzName);
+            typeName = TypeName.get(clazz);
         } catch (MirroredTypeException mte) {
-            DeclaredType classTypeMirror = (DeclaredType) mte.getTypeMirror();
-            type = (TypeElement) classTypeMirror.asElement();
+            typeName = TypeName.get(mte.getTypeMirror());
         }
-        return type;
+        return typeName;
     }
 
     private void checkIsTargetName(String target) {

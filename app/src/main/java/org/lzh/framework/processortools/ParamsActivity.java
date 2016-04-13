@@ -12,7 +12,8 @@ import butterknife.ButterKnife;
 
 @Params(fields = {
         @Field(name = "username",type = String.class),
-        @Field(name = "password",type = String.class)
+        @Field(name = "password",type = String.class),
+        @Field(name = "test",type = int.class)
 })
 public class ParamsActivity extends AppCompatActivity {
 
@@ -20,7 +21,6 @@ public class ParamsActivity extends AppCompatActivity {
     TextView username;
     @Bind(R.id.password)
     TextView password;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

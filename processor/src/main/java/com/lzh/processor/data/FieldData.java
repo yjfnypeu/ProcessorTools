@@ -1,8 +1,7 @@
 package com.lzh.processor.data;
 
 import com.lzh.processor.annoapi.FieldType;
-
-import javax.lang.model.element.TypeElement;
+import com.lzh.processor.util.javapoet.TypeName;
 
 /**
  * @author Administrator
@@ -11,7 +10,7 @@ public class FieldData {
 
     private String name;
     private String doc;
-    private TypeElement type;
+    private TypeName type;
     private FieldType fieldType;
     private String defValue;
 
@@ -39,11 +38,11 @@ public class FieldData {
         this.doc = doc;
     }
 
-    public TypeElement getType() {
+    public TypeName getType() {
         return type;
     }
 
-    public void setType(TypeElement type) {
+    public void setType(TypeName type) {
         this.type = type;
     }
 
