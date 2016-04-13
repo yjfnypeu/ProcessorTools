@@ -18,13 +18,15 @@ public class MainActivity extends Activity {
     @OnClick(R.id.toEmptyParamsActivity)
     void toEmptyActivity() {
         // start跳转支持以Activity/Context/Fragment/V4Fragment进行跳转
-        EmptyActivity_Dispatcher.create().requestCode(-1).start(this);
+        EmptyActivity_Dispatcher.create().requestCode(-1).start(MainActivity.this);
     }
 
     @OnClick(R.id.toParamsActivity)
     void toParamaActivity () {
         ParamsActivity_Dispatcher.create()
-                .setUserinfo(new UserInfo().setUsername("豪大爷").setPassword("你猜"))
+                .setUsername("123456")
+                .setPassword("111111")
+                .requestCode(-1)
                 .start(this);
     }
 }
