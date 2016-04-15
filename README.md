@@ -1,6 +1,28 @@
 # ProcessorTools
 编译时注解库。为Activity添加注解。简化页面跳转传值逻辑。
-首先。给你的Activity添加@Params注解：
+
+如何引进processorTool:
+
+- 在工程的根目录的build.gradle中加入：
+```
+classpath 'com.neenbedankt.gradle.plugins:android-apt:1.4'
+```
+- 在要使用的工程module中添加应用apt插件
+
+```
+apply plugin: 'com.neenbedankt.android-apt'
+```
+- 加入引用：
+
+```
+dependencies {
+	...
+    compile 'org.lzh.compiler.lib:processortool-api:0.1'
+    apt 'org.lzh.compiler.lib:processortool-compiler:0.1'
+}
+```
+
+具体使用姿势，首先。给你的Activity添加@Params注解：
 
 ```
 @Params
