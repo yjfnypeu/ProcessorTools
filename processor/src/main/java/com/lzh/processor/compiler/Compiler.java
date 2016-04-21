@@ -20,7 +20,6 @@ import javax.tools.Diagnostic;
 @AutoService(Processor.class)
 public class Compiler extends AbstractProcessor {
 
-    private UtilMgr mgr;
     private boolean isFirst;
 
     @Override
@@ -51,19 +50,17 @@ public class Compiler extends AbstractProcessor {
             return false;
         }
         isFirst = true;
-        FileLog fileLog = new FileLog();
         FileLog.reload();
         Set<? extends Element> elements = roundEnv.getElementsAnnotatedWith(Params.class);
         for (Element ele : elements) {
             try {
                 ElementParser parser = ElementParser.createParser((TypeElement) ele);
-                JavaFactory javaFactory = new JavaFactory(parser);
-                javaFactory.generateCode();
+                parser.generateCode();
             }catch (Throwable e) {
                 FileLog.printException(e);
                 error(ele, "processor tool generate java files failed: %s,%s", ele, e.getMessage());
+                return true;
             }
-
         }
 
         return false;

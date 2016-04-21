@@ -13,6 +13,7 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
+
     }
 
     @OnClick(R.id.toEmptyParamsActivity)
@@ -28,5 +29,38 @@ public class MainActivity extends Activity {
                 .setPassword("111111")
                 .requestCode(-1)
                 .start(this);
+    }
+
+    @OnClick(R.id.toParentActivity)
+    void toParentActivity() {
+        ParentActivity_Dispatcher.create()
+                .setUsername("ParentActivity pass : username")
+                .start(this);
+    }
+
+    @OnClick(R.id.toSubActivity)
+    void toSubActivity() {
+        SubActivity_Dispatcher.create().setUsername("SubActivity pass : username")
+                .setPassword("SubActivity pass : password")
+                .start(this);
+    }
+
+    @OnClick(R.id.toParentFragment)
+    void toParentFragment () {
+        TestFragment build = TestFragment_Builder.create().setUsername("TestFragment pass : username")
+                .build();
+        getFragmentManager().beginTransaction()
+                .replace(R.id.frag_layout,build)
+                .commit();
+    }
+
+    @OnClick(R.id.toSubFragment)
+    void toSubFragment () {
+        SubFragment build = SubFragment_Builder.create().setUsername("SubFragment pass : username")
+                .setPassword("SubFragment pass : password")
+                .build();
+        getFragmentManager().beginTransaction()
+                .replace(R.id.frag_layout,build)
+                .commit();
     }
 }
