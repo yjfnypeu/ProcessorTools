@@ -78,11 +78,12 @@ public abstract class FileFactory {
     }
 
     /**
-     * create inner class RequestData
+     * create inner class RequestData,contains all of the field define by annotation @Field
      */
     TypeSpec generateRequestData() {
         TypeSpec.Builder builder = TypeSpec.classBuilder(REQUEST_DATA_CLASS)
                 .addModifiers(Modifier.STATIC, Modifier.PUBLIC)
+                .addJavadoc("inner class RequestData,contains all of the field define by annotation @Field")
                 .addSuperinterface(TypeName.get(Serializable.class));
         List<FieldData> fieldList = parser.getFieldList();
 

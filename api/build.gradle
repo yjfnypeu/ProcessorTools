@@ -1,3 +1,5 @@
+import com.sun.org.apache.xalan.internal.xsltc.cmdline.Compile
+
 apply plugin: 'java'
 apply plugin: 'com.novoda.bintray-release'//添加
 
@@ -8,9 +10,13 @@ dependencies {
 
 }
 
-tasks.withType (JavaCompile){
-    options.encoding = "utf-8"
+tasks.withType(Compile) {
+    options.encoding = "UTF-8"
 }
+
+//tasks.withType (JavaCompile){
+//    options.encoding = "utf-8"
+//}
 
 //添加
 publish {

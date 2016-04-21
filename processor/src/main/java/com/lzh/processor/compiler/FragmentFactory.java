@@ -84,6 +84,8 @@ public class FragmentFactory extends FileFactory {
         TypeName bundle = getTypeName(BUNDLE_NAME);
         TypeName clz = getTypeName(parser.getElement());
         MethodSpec.Builder builder = MethodSpec.methodBuilder(BUILD_METHOD)
+                .addModifiers(Modifier.PUBLIC)
+                .addJavadoc("build fragment instance of $L",clz)
                 .returns(getTypeName(parser.getElement()))
                 .addStatement("$T instance = new $T()",clz,clz)
                 .addStatement("$T bundle = $L()",bundle,CREATE_BUNDLE_NAME)

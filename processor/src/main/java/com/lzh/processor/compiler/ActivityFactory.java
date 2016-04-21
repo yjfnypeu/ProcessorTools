@@ -1,14 +1,11 @@
 package com.lzh.processor.compiler;
 
-import com.lzh.processor.data.FieldData;
-import com.lzh.processor.util.StringUtils;
 import com.lzh.processor.util.javapoet.FieldSpec;
 import com.lzh.processor.util.javapoet.MethodSpec;
 import com.lzh.processor.util.javapoet.TypeName;
 import com.lzh.processor.util.javapoet.TypeSpec;
 
 import java.io.IOException;
-import java.util.List;
 
 import javax.lang.model.element.Modifier;
 
@@ -78,6 +75,7 @@ public class ActivityFactory extends FileFactory{
                 .beginControlFlow("if (data == null || data.getSerializableExtra(TAG) == null)")
                 .addStatement("return new $T()", requestData)
                 .endControlFlow()
+                .addJavadoc("receive passed data,get data from intent by tag : $L",TAG_FIELD)
                 .beginControlFlow("else")
                 .addStatement("return ($T) data.getSerializableExtra(TAG)", requestData)
                 .endControlFlow()
@@ -88,6 +86,7 @@ public class ActivityFactory extends FileFactory{
         TypeName intent = getTypeName(INTENT_NAME);
         MethodSpec.Builder builder = MethodSpec.methodBuilder(CREATE_INTENT)
                 .addModifiers(Modifier.PUBLIC)
+                .addJavadoc("Create intent,put the instance of RequestData into it,and parent class request data")
                 .returns(getTypeName(INTENT_NAME))
                 .addParameter(getTypeName(CONTEXT_NAME), "context")
                 .addStatement("$T intent = new $T($L,$L.class)",
@@ -120,27 +119,23 @@ public class ActivityFactory extends FileFactory{
         typeBuilder.addMethod(
                 startByActivity.addStatement("target.startActivityForResult(intent,$L)", REQUEST_CODE_FIELD_NAME)
                         .addStatement("return this")
-                        .build()
-        );
-        MethodSpec.Builder startByContext = createStartMethodBuilder(CONTEXT_NAME,paramsName,paramsName);
-        typeBuilder.addMethod(
-                startByContext.addStatement("target.startActivity(intent)")
-                        .addStatement("return this")
+                        .addJavadoc("start a Activity by $L",ACTIVITY_NAME)
                         .build()
         );
         MethodSpec.Builder startByFragment = createStartMethodBuilder(FRAGMENT_NAME, paramsName, paramsName + ".getActivity()");
         typeBuilder.addMethod(
                 startByFragment.addStatement("target.startActivityForResult(intent,$L)",REQUEST_CODE_FIELD_NAME)
+                        .addJavadoc("start a Activity by $L",FRAGMENT_NAME)
                         .addStatement("return this")
                         .build()
         );
         MethodSpec.Builder startByV4Fragment = createStartMethodBuilder(V4FRAGMENT_NAME, paramsName, paramsName + ".getActivity()");
         typeBuilder.addMethod(
                 startByV4Fragment.addStatement("target.startActivityForResult(intent,$L)",REQUEST_CODE_FIELD_NAME)
+                        .addJavadoc("start a Activity by $L",V4FRAGMENT_NAME)
                         .addStatement("return this")
                         .build()
         );
-
 
     }
 
@@ -156,6 +151,7 @@ public class ActivityFactory extends FileFactory{
     private void addRequestCodeMethod(TypeSpec.Builder typeBuilder) {
         MethodSpec build = MethodSpec.methodBuilder(REQUEST_CODE_FIELD_NAME)
                 .addModifiers(Modifier.PUBLIC)
+                .addJavadoc("Set request code,use -1 if not defined")
                 .returns(generateClassName)
                 .addParameter(TypeName.INT, REQUEST_CODE_FIELD_NAME)
                 .addStatement("this.$L = $L", REQUEST_CODE_FIELD_NAME, REQUEST_CODE_FIELD_NAME)
@@ -171,9 +167,13 @@ public class ActivityFactory extends FileFactory{
     private void addFields(TypeSpec.Builder typeBuilder) {
         // add tag
         typeBuilder.addField(FieldSpec.builder(TypeName.get(String.class), TAG_FIELD, Modifier.PRIVATE, Modifier.FINAL, Modifier.STATIC)
-                .initializer("$S", parser.getClzName()).build());
+                .addJavadoc("The tag to pass data")
+                .initializer("$S", parser.getClzName())
+                .build());
         // add RequestData filed
-        typeBuilder.addField(FieldSpec.builder(getTypeName(REQUEST_DATA_CLASS), REQUEST_DATA_FIELD_NAME, Modifier.PRIVATE).build());
+        typeBuilder.addField(FieldSpec.builder(getTypeName(REQUEST_DATA_CLASS), REQUEST_DATA_FIELD_NAME, Modifier.PRIVATE)
+                .addJavadoc("The instance of RequestData that is the container of whole filed")
+                .build());
         // add request code field
         typeBuilder.addField(FieldSpec.builder(TypeName.INT, REQUEST_CODE_FIELD_NAME,Modifier.PRIVATE)
                 .initializer("-1")
@@ -191,6 +191,7 @@ public class ActivityFactory extends FileFactory{
         String clzName = parser.getClzName();
         clzName = clzName + SUFFIX;
         return TypeSpec.classBuilder(clzName)
+                .addJavadoc("This class is generated by annotation @Params")
                 .addModifiers(Modifier.PUBLIC);
     }
 

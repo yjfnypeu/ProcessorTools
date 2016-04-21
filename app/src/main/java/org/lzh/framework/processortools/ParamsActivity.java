@@ -11,8 +11,8 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 
 @Params(fields = {
-        @Field(name = "username",type = String.class),
-        @Field(name = "password",type = String.class),
+        @Field(name = "username",type = String.class,doc = "用户名"),
+        @Field(name = "password",type = String.class,doc = "密码"),
 })
 public class ParamsActivity extends Activity {
 
