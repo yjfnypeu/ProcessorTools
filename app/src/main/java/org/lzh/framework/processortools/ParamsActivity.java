@@ -13,7 +13,6 @@ import butterknife.ButterKnife;
 @Params(fields = {
         @Field(name = "username",type = String.class),
         @Field(name = "password",type = String.class),
-        @Field(name = "test",type = int.class)
 })
 public class ParamsActivity extends Activity {
 

@@ -49,8 +49,9 @@ public class MainActivity extends Activity {
     void toParentFragment () {
         TestFragment build = TestFragment_Builder.create().setUsername("TestFragment pass : username")
                 .build();
+
         getFragmentManager().beginTransaction()
-                .replace(R.id.frag_layout,build)
+                .replace(R.id.frag_layout, build)
                 .commit();
     }
 

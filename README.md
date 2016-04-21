@@ -17,8 +17,8 @@ apply plugin: 'com.neenbedankt.android-apt'
 ```
 dependencies {
 	...
-    compile 'org.lzh.compiler.lib:processortool-api:0.1'
-    apt 'org.lzh.compiler.lib:processortool-compiler:0.1'
+    compile 'org.lzh.compiler.lib:processortool-api:0.2'
+    apt 'org.lzh.compiler.lib:processortool-compiler:0.2'
 }
 ```
 
@@ -89,6 +89,176 @@ start方法也支持使用四种类型的参数进行跳转,Activity,Context,Fra
     }
 ```
 调用生成类ParamsActivity_Dispatcher的getData方法。即可拿到装有全部参数的类RequestData的实例。拿到数据后任性的给界面绑定数据吧！
+
+- Fragment的支持
+
+```
+@Params(fields = {
+        @Field(name = "username", type = String.class, doc = "用户名")
+})
+public class TestFragment extends Fragment {
+	...
+	// 传递参数数据类
+	TestFragment_Builder.RequestData requestData;
+	@Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        // 获取传递参数
+        requestData = TestFragment_Builder.getData(this);
+    }
+}
+```
+对Fragment使用此注解主要用于创建Fragment实例：
+
+```
+TestFragment build = TestFragment_Builder.create().setUsername
+		("TestFragment pass : username").build();
+getFragmentManager().beginTransaction()
+                .replace(R.id.frag_layout,build)
+                .commit();
+```
+对于多继承关系的Activity：
+
+```
+// 界面两个控件。ParentActivity负责传递username值并设置
+@Params(fields = {
+        @Field(name = "username", type = String.class)
+})
+public class ParentActivity extends Activity {
+
+    @Bind(R.id.username)
+    Button username;
+    @Bind(R.id.password)
+    Button password;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_parent);
+        ButterKnife.bind(this);
+		// 获取传递的username并设置
+        ParentActivity_Dispatcher.RequestData data = ParentActivity_Dispatcher.getData(getIntent());
+        username.setText(data.getUsername());
+
+    }
+}
+```
+
+```
+// 继承的Activity所使用的@Filed注解中。name名不得与被继承的类ParentActivity中使用的@Field的name名重复。
+@Params(fields = {
+        @Field(name = "password",type = String.class)
+})
+public class SubActivity extends ParentActivity {
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        // 获取子Activity传递的password值并更新界面
+        SubActivity_Dispatcher.RequestData data = SubActivity_Dispatcher.getData(getIntent());
+        password.setText(data.getPassword());
+    }
+}
+```
+
+界面跳转时，子类SubActivity跳转可设置的属性会将继承的Activity中设置过的值都加入进来：
+
+```
+SubActivity_Dispatcher.create()
+				.setUsername("SubActivity pass : username")// 父类传参
+                .setPassword("SubActivity pass : password")// 子类传参
+                .start(this);
+```
+
+fragment多继承时也是一样的
+
+```
+// 父类Fragment只传递username
+@Params(fields = {
+        @Field(name = "username", type = String.class, doc = "用户名")
+})
+public class TestFragment extends Fragment {
+
+    @Bind(R.id.username)
+    Button username;
+    @Bind(R.id.password)
+    Button password;
+
+    TestFragment_Builder.RequestData requestData;
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        requestData = TestFragment_Builder.getData(this);
+    }
+
+    @Nullable
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.activity_parent, container, false);
+        ButterKnife.bind(this, view);
+        return view;
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        username.setText(requestData.getUsername());
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        ButterKnife.unbind(this);
+    }
+}
+```
+
+```
+// 子类传递参数password
+@Params(fields = {
+        @Field(name = "password", type = String.class, doc = "用户密码")
+})
+public class SubFragment extends TestFragment {
+
+    SubFragment_Builder.RequestData requestData;
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        requestData = SubFragment_Builder.getData(this);
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        password.setText(requestData.getPassword());
+    }
+}
+```
+
+跳转子Fragment传参：
+
+```
+SubFragment build = SubFragment_Builder.create()
+				.setUsername("SubFragment pass : username")
+                .setPassword("SubFragment pass : password")
+                .build();
+getFragmentManager().beginTransaction()
+                .replace(R.id.frag_layout,build)
+                .commit();
+```
+
+对于某些时候。可能不需要设置值后立即来跳转。比较通知栏的pendingIntent：可以设置值之后。拿到已设置值后的Bundle或者Intent，方便在各种场景下使用。
+
+```
+Intent intent = ParamsActivity_Dispatcher.create()
+                .setUsername("123456")
+                .setPassword("654321")
+                .createIntent(MainActivity.this);
+Bundle bundle = SubFragment_Builder.create().setUsername("username")
+                .setPassword("password")
+                .createBundle();
+```
 
 下面介绍一下Field注解含有的以下五个参数：
  - name	:	(必填)要传递的参数名。如上的username、password
