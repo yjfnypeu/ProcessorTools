@@ -5,11 +5,11 @@ import com.lzh.processor.data.FieldData;
 import com.lzh.processor.reflect.Reflect;
 import com.lzh.processor.util.StringUtils;
 import com.lzh.processor.util.UtilMgr;
-import com.lzh.processor.util.javapoet.FieldSpec;
-import com.lzh.processor.util.javapoet.JavaFile;
-import com.lzh.processor.util.javapoet.MethodSpec;
-import com.lzh.processor.util.javapoet.TypeName;
-import com.lzh.processor.util.javapoet.TypeSpec;
+import com.squareup.javapoet.FieldSpec;
+import com.squareup.javapoet.JavaFile;
+import com.squareup.javapoet.MethodSpec;
+import com.squareup.javapoet.TypeName;
+import com.squareup.javapoet.TypeSpec;
 
 import java.io.IOException;
 import java.io.Serializable;
@@ -35,10 +35,12 @@ public abstract class FileFactory {
     TypeName generateClassName = null;
     TypeName generateParentClassName = null;
     boolean isEmptyParams = true;
+    boolean isAbstract = true;
 
     public FileFactory(ElementParser parser) {
         this.parser = parser;
         this.isEmptyParams = this.parser.getFieldList().size() == 0;
+        this.isAbstract = this.parser.isAbstract();
         pkgName = getPkgName();
         generateClassName = getTypeName(parser.getClzName() + getSuffix());
         if (parser.getParentElement() != null) {

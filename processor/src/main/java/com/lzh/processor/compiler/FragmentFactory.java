@@ -1,9 +1,10 @@
 package com.lzh.processor.compiler;
 
-import com.lzh.processor.util.javapoet.FieldSpec;
-import com.lzh.processor.util.javapoet.MethodSpec;
-import com.lzh.processor.util.javapoet.TypeName;
-import com.lzh.processor.util.javapoet.TypeSpec;
+
+import com.squareup.javapoet.FieldSpec;
+import com.squareup.javapoet.MethodSpec;
+import com.squareup.javapoet.TypeName;
+import com.squareup.javapoet.TypeSpec;
 
 import java.io.IOException;
 
@@ -48,10 +49,10 @@ public class FragmentFactory extends FileFactory {
         typeBuilder.addMethod(createMethod());
         // create set params method
         addParamsSetMethod(typeBuilder);
-        // create build method
-        typeBuilder.addMethod(buildMethod());
-
-
+        if (!isAbstract) {
+            // create build method
+            typeBuilder.addMethod(buildMethod());
+        }
         build(typeBuilder);
     }
 

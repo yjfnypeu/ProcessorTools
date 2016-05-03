@@ -32,9 +32,9 @@ public class MainActivity extends Activity {
 
     @OnClick(R.id.toParentActivity)
     void toParentActivity() {
-        ParentActivity_Dispatcher.create()
-                .setUsername("ParentActivity pass : username")
-                .start(this);
+//        ParentActivity_Dispatcher.create()
+//                .setUsername("ParentActivity pass : username")
+//                .start(this);
     }
 
     @OnClick(R.id.toSubActivity)
@@ -46,12 +46,13 @@ public class MainActivity extends Activity {
 
     @OnClick(R.id.toParentFragment)
     void toParentFragment () {
-        TestFragment build = TestFragment_Builder.create().setUsername("TestFragment pass : username")
-                .build();
-
-        getFragmentManager().beginTransaction()
-                .replace(R.id.frag_layout, build)
-                .commit();
+//        TestFragment build = TestFragment_Builder.create().setUsername("TestFragment pass : username")
+//                .build();
+//
+//        getFragmentManager().beginTransaction()
+//                .replace(R.id.frag_layout, build)
+//                .commit();
+        Bundle bundle = new Bundle();
     }
 
     @OnClick(R.id.toSubFragment)

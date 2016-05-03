@@ -1,7 +1,7 @@
 package com.lzh.processor.data;
 
 import com.lzh.processor.annoapi.FieldType;
-import com.lzh.processor.util.javapoet.TypeName;
+import com.squareup.javapoet.TypeName;
 
 /**
  * @author Administrator

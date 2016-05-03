@@ -8,19 +8,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
-import com.lzh.processor.annoapi.Field;
-import com.lzh.processor.annoapi.Params;
-
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
 /**
  * @author Administrator
  */
-@Params(fields = {
-        @Field(name = "username", type = String.class, doc = "用户名")
-})
-public class TestFragment extends Fragment {
+
+public abstract class TestFragment extends Fragment {
 
     @Bind(R.id.username)
     Button username;

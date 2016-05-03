@@ -1,7 +1,6 @@
 package com.lzh.processor.compiler;
 
 import com.lzh.processor.annoapi.Params;
-import com.lzh.processor.util.FileLog;
 import com.lzh.processor.util.UtilMgr;
 
 import java.util.HashSet;
@@ -47,14 +46,12 @@ public class Compiler extends AbstractProcessor {
             return false;
         }
         isFirst = true;
-        FileLog.reload();
         Set<? extends Element> elements = roundEnv.getElementsAnnotatedWith(Params.class);
         for (Element ele : elements) {
             try {
                 ElementParser parser = ElementParser.createParser((TypeElement) ele);
                 parser.generateCode();
             }catch (Throwable e) {
-                FileLog.printException(e);
                 error(ele, "processor tool generate java files failed: %s,%s", ele, e.getMessage());
                 return true;
             }

@@ -4,12 +4,14 @@ import com.lzh.processor.annoapi.Field;
 import com.lzh.processor.annoapi.Params;
 import com.lzh.processor.data.FieldData;
 import com.lzh.processor.util.UtilMgr;
-import com.lzh.processor.util.javapoet.TypeName;
+import com.squareup.javapoet.TypeName;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
+import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.MirroredTypeException;
 import javax.lang.model.type.TypeMirror;
@@ -184,6 +186,11 @@ public class ElementParser {
                 new FragmentFactory(this).generateCode();
                 break;
         }
+    }
+
+    public boolean isAbstract() {
+        Set<Modifier> modifiers = element.getModifiers();
+        return modifiers.contains(Modifier.ABSTRACT);
     }
 
     enum ElementType {

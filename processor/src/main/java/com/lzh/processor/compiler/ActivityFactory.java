@@ -1,9 +1,10 @@
 package com.lzh.processor.compiler;
 
-import com.lzh.processor.util.javapoet.FieldSpec;
-import com.lzh.processor.util.javapoet.MethodSpec;
-import com.lzh.processor.util.javapoet.TypeName;
-import com.lzh.processor.util.javapoet.TypeSpec;
+
+import com.squareup.javapoet.FieldSpec;
+import com.squareup.javapoet.MethodSpec;
+import com.squareup.javapoet.TypeName;
+import com.squareup.javapoet.TypeSpec;
 
 import java.io.IOException;
 
@@ -57,8 +58,10 @@ public class ActivityFactory extends FileFactory{
         addRequestCodeMethod(typeBuilder);
         // add create intent method
         addCreateIntentMethod(typeBuilder);
-        // add start activity method
-        addStartMethod(typeBuilder);
+        if (!isAbstract) {
+            // add start activity method
+            addStartMethod(typeBuilder);
+        }
 
 
         build(typeBuilder);
@@ -123,20 +126,20 @@ public class ActivityFactory extends FileFactory{
         typeBuilder.addMethod(
                 startByActivity.addStatement("target.startActivityForResult(intent,$L)", REQUEST_CODE_FIELD_NAME)
                         .addStatement("return this")
-                        .addJavadoc("start a Activity by $L",ACTIVITY_NAME)
+                        .addJavadoc("launcher a Activity by $L",ACTIVITY_NAME)
                         .build()
         );
         MethodSpec.Builder startByFragment = createStartMethodBuilder(FRAGMENT_NAME, paramsName, paramsName + ".getActivity()");
         typeBuilder.addMethod(
                 startByFragment.addStatement("target.startActivityForResult(intent,$L)",REQUEST_CODE_FIELD_NAME)
-                        .addJavadoc("start a Activity by $L",FRAGMENT_NAME)
+                        .addJavadoc("launcher a Activity by $L",FRAGMENT_NAME)
                         .addStatement("return this")
                         .build()
         );
         MethodSpec.Builder startByV4Fragment = createStartMethodBuilder(V4FRAGMENT_NAME, paramsName, paramsName + ".getActivity()");
         typeBuilder.addMethod(
                 startByV4Fragment.addStatement("target.startActivityForResult(intent,$L)",REQUEST_CODE_FIELD_NAME)
-                        .addJavadoc("start a Activity by $L",V4FRAGMENT_NAME)
+                        .addJavadoc("launcher a Activity by $L",V4FRAGMENT_NAME)
                         .addStatement("return this")
                         .build()
         );
