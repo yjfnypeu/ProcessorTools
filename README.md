@@ -17,8 +17,8 @@ apply plugin: 'com.neenbedankt.android-apt'
 ```
 dependencies {
 	...
-    compile 'org.lzh.compiler.lib:processortool-api:0.2'
-    apt 'org.lzh.compiler.lib:processortool-compiler:0.2'
+    compile 'org.lzh.compiler.lib:processortool-api:0.4'
+    apt 'org.lzh.compiler.lib:processortool-compiler:0.4'
 }
 ```
 
