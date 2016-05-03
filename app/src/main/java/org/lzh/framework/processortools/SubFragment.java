@@ -14,7 +14,7 @@ import com.lzh.processor.annoapi.Params;
         @Field(name = "password", type = String.class, doc = "用户密码")
 })
 public class SubFragment extends TestFragment {
-
+    public static final String TAG = SubFragment.class.getCanonicalName();
     SubFragment_Builder.RequestData requestData;
 
     @Override

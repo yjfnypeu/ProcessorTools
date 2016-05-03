@@ -18,7 +18,8 @@ import javax.lang.model.type.TypeMirror;
 public class FileLog {
 
 	private static final boolean DEBUG = true;
-	private static String filePath = "C:\\apt_gene\\apt_intent_generate.log";
+//	private static String filePath = "C:\\apt_gene\\apt_intent_generate.log";
+	private static String filePath = "/build/log.txt";
 
 	public FileLog() {
 	}

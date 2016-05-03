@@ -34,7 +34,7 @@ ext {
     userOrg = 'yjfnypeu'
     groupId = 'org.lzh.compiler.lib'
     uploadName = 'ProcessorTool'
-    publishVersion = '0.3'
+    publishVersion = '0.4'
     desc = 'a set of processor tools,current is only for pass data to activity or fragment'
     website = 'https://github.com/yjfnypeu/ProcessorTools'
     licences = ['Apache-2.0']

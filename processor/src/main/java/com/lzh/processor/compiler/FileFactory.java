@@ -34,9 +34,11 @@ public abstract class FileFactory {
     ElementParser parser;
     TypeName generateClassName = null;
     TypeName generateParentClassName = null;
+    boolean isEmptyParams = true;
 
     public FileFactory(ElementParser parser) {
         this.parser = parser;
+        this.isEmptyParams = this.parser.getFieldList().size() == 0;
         pkgName = getPkgName();
         generateClassName = getTypeName(parser.getClzName() + getSuffix());
         if (parser.getParentElement() != null) {
@@ -155,11 +157,13 @@ public abstract class FileFactory {
      * generate static create method
      */
     MethodSpec createMethod() {
-        return MethodSpec.methodBuilder(CREATE_METHOD)
+        MethodSpec.Builder createBuilder = MethodSpec.methodBuilder(CREATE_METHOD)
                 .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
-                .addStatement("$T instance = new $T()", generateClassName, generateClassName)
-                .addStatement("instance.$L = new $L()", REQUEST_DATA_FIELD_NAME, REQUEST_DATA_CLASS)
-                .addStatement("return instance")
+                .addStatement("$T instance = new $T()", generateClassName, generateClassName);
+        if (!isEmptyParams) {
+            createBuilder.addStatement("instance.$L = new $L()", REQUEST_DATA_FIELD_NAME, REQUEST_DATA_CLASS);
+        }
+        return createBuilder.addStatement("return instance")
                 .returns(generateClassName)
                 .build();
     }

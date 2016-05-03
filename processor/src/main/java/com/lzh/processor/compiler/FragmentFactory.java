@@ -32,8 +32,12 @@ public class FragmentFactory extends FileFactory {
     @Override
     void generateCode() throws IOException {
         TypeSpec.Builder typeBuilder = generateTypeBuilder();
-        // create inner data class method
-        typeBuilder.addType(generateRequestData());
+        if (!isEmptyParams) {
+            // create inner data class method
+            typeBuilder.addType(generateRequestData());
+            // create get data method
+            typeBuilder.addMethod(createGetDataMethod());
+        }
         // create filed
         createFields(typeBuilder);
         // create private constructor method
@@ -46,8 +50,7 @@ public class FragmentFactory extends FileFactory {
         addParamsSetMethod(typeBuilder);
         // create build method
         typeBuilder.addMethod(buildMethod());
-        // create get data method
-        typeBuilder.addMethod(createGetDataMethod());
+
 
         build(typeBuilder);
     }
@@ -57,9 +60,11 @@ public class FragmentFactory extends FileFactory {
         MethodSpec.Builder builder = MethodSpec.methodBuilder(CREATE_BUNDLE_NAME)
                 .addModifiers(Modifier.PUBLIC)
                 .returns(bundle)
-                .addStatement("$T bundle = new $T()",bundle,bundle)
-                .addStatement("bundle.putSerializable($L,$L)",TAG_FIELD,REQUEST_DATA_FIELD_NAME)
-                ;
+                .addStatement("$T bundle = new $T()", bundle, bundle);
+
+        if (!isEmptyParams) {
+            builder.addStatement("bundle.putSerializable($L,$L)",TAG_FIELD,REQUEST_DATA_FIELD_NAME);
+        }
 
         if (generateParentClassName != null) {
             builder.addStatement("bundle.putAll($L.$L())",PARENT_CLASS_FIELD_NAME,CREATE_BUNDLE_NAME);
@@ -98,9 +103,11 @@ public class FragmentFactory extends FileFactory {
     private void createFields(TypeSpec.Builder typeBuilder) {
         // add tag
         typeBuilder.addField(FieldSpec.builder(TypeName.get(String.class), TAG_FIELD, Modifier.PRIVATE, Modifier.FINAL, Modifier.STATIC)
-                .initializer("$S", parser.getClzName()).build());
-        // add RequestData filed
-        typeBuilder.addField(FieldSpec.builder(getTypeName(REQUEST_DATA_CLASS), REQUEST_DATA_FIELD_NAME, Modifier.PUBLIC).build());
+                .initializer("$L.class.getCanonicalName()", parser.getClzName()).build());
+        if (!isEmptyParams) {
+            // add RequestData filed
+            typeBuilder.addField(FieldSpec.builder(getTypeName(REQUEST_DATA_CLASS), REQUEST_DATA_FIELD_NAME, Modifier.PUBLIC).build());
+        }
         if (generateParentClassName != null) {
             typeBuilder.addField(FieldSpec.builder(generateParentClassName,PARENT_CLASS_FIELD_NAME,Modifier.PRIVATE).build());
         }

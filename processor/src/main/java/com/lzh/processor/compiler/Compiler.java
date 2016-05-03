@@ -1,6 +1,5 @@
 package com.lzh.processor.compiler;
 
-import com.google.auto.service.AutoService;
 import com.lzh.processor.annoapi.Params;
 import com.lzh.processor.util.FileLog;
 import com.lzh.processor.util.UtilMgr;
@@ -10,14 +9,12 @@ import java.util.Set;
 
 import javax.annotation.processing.AbstractProcessor;
 import javax.annotation.processing.ProcessingEnvironment;
-import javax.annotation.processing.Processor;
 import javax.annotation.processing.RoundEnvironment;
 import javax.lang.model.SourceVersion;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.TypeElement;
 import javax.tools.Diagnostic;
 
-@AutoService(Processor.class)
 public class Compiler extends AbstractProcessor {
 
     private boolean isFirst;

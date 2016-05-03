@@ -41,8 +41,12 @@ public class ActivityFactory extends FileFactory{
         TypeSpec.Builder typeBuilder = generateTypeBuilder();
         // add field
         addFields(typeBuilder);
-        // add class RequestData
-        typeBuilder.addType(generateRequestData());
+        if (!isEmptyParams) {
+            // add class RequestData
+            typeBuilder.addType(generateRequestData());
+            // add get request data method
+            typeBuilder.addMethod(createGetDataMethod());
+        }
         // create private constructor method
         typeBuilder.addMethod(createPrivateConstructor());
         // add create method
@@ -55,8 +59,7 @@ public class ActivityFactory extends FileFactory{
         addCreateIntentMethod(typeBuilder);
         // add start activity method
         addStartMethod(typeBuilder);
-        // add get request data method
-        typeBuilder.addMethod(createGetDataMethod());
+
 
         build(typeBuilder);
 
@@ -96,9 +99,10 @@ public class ActivityFactory extends FileFactory{
             builder.addStatement("$T parentIntent = $L.$L(context)",intent,PARENT_CLASS_FIELD_NAME,CREATE_INTENT);
             builder.addStatement("intent.putExtras(parentIntent)");
         }
-
-        builder.addStatement("intent.putExtra($L,$L)",TAG_FIELD,REQUEST_DATA_FIELD_NAME)
-                .addStatement("return intent");
+        if (!isEmptyParams) {
+            builder.addStatement("intent.putExtra($L,$L)", TAG_FIELD, REQUEST_DATA_FIELD_NAME);
+        }
+        builder.addStatement("return intent");
 
 //        MethodSpec builder = MethodSpec.methodBuilder(CREATE_INTENT)
 //                .addModifiers(Modifier.PRIVATE)
@@ -168,12 +172,14 @@ public class ActivityFactory extends FileFactory{
         // add tag
         typeBuilder.addField(FieldSpec.builder(TypeName.get(String.class), TAG_FIELD, Modifier.PRIVATE, Modifier.FINAL, Modifier.STATIC)
                 .addJavadoc("The tag to pass data")
-                .initializer("$S", parser.getClzName())
+                .initializer("$L.class.getCanonicalName()", parser.getClzName())
                 .build());
-        // add RequestData filed
-        typeBuilder.addField(FieldSpec.builder(getTypeName(REQUEST_DATA_CLASS), REQUEST_DATA_FIELD_NAME, Modifier.PRIVATE)
-                .addJavadoc("The instance of RequestData that is the container of whole filed")
-                .build());
+        if (!isEmptyParams) {
+            // add RequestData filed
+            typeBuilder.addField(FieldSpec.builder(getTypeName(REQUEST_DATA_CLASS), REQUEST_DATA_FIELD_NAME, Modifier.PRIVATE)
+                    .addJavadoc("The instance of RequestData that is the container of whole filed")
+                    .build());
+        }
         // add request code field
         typeBuilder.addField(FieldSpec.builder(TypeName.INT, REQUEST_CODE_FIELD_NAME,Modifier.PRIVATE)
                 .initializer("-1")
